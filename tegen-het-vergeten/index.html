@@ -7,10 +7,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
-      /* Smooth feel */
       html { scroll-behavior: smooth; }
 
-      /* Subtiele “film grain” overlay */
       .grain {
         pointer-events: none;
         background-image:
@@ -22,18 +20,20 @@
         opacity: .45;
       }
 
-      /* Glow voor subtiele highlights */
-      .soft-glow {
-        filter: drop-shadow(0 0 24px rgba(255,255,255,.10));
+      .soft-glow { filter: drop-shadow(0 0 24px rgba(255,255,255,.10)); }
+
+      /* Subtle pulse to draw attention */
+      @keyframes softPulse {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.03); opacity: 0.92; }
       }
+      .pulse-soft { animation: softPulse 1.8s ease-in-out infinite; }
     </style>
   </head>
 
   <body class="bg-black text-white selection:bg-white selection:text-black">
-    <!-- Sticky “memory canvas” -->
     <main class="relative">
       <section class="sticky top-0 h-screen overflow-hidden">
-        <!-- Background image -->
         <img
           id="memoryImg"
           src="Fotos/foto herrinering.jpg"
@@ -42,7 +42,6 @@
           style="filter: blur(0px) saturate(1.05) contrast(1.05); opacity: 1;"
         />
 
-        <!-- Dark vignette + gradient -->
         <div
           class="absolute inset-0"
           style="
@@ -52,16 +51,28 @@
           "
         ></div>
 
-        <!-- Grain overlay -->
         <div class="absolute inset-0 grain"></div>
 
-        <!-- Top left label -->
         <div class="absolute left-5 top-5 z-20 flex items-center gap-3">
           <div class="h-2 w-2 rounded-full bg-white/80"></div>
           <p class="text-xs tracking-[0.25em] text-white/80 uppercase">Tegen het vergeten</p>
         </div>
 
-        <!-- Center content -->
+        <!-- BIG clear sound button (visible immediately) -->
+        <button
+          id="soundBtn"
+          class="fixed bottom-5 right-5 z-50 pulse-soft
+                 rounded-full border border-white/25 bg-white/10 px-5 py-3
+                 text-sm text-white/95 backdrop-blur
+                 shadow-lg shadow-black/40
+                 hover:bg-white/15 hover:border-white/40
+                 active:scale-[0.98] transition"
+          type="button"
+          aria-label="Geluid aanzetten"
+        >
+          🔊 Klik hier om geluid aan te zetten
+        </button>
+
         <div class="relative z-10 h-full flex items-center justify-center px-6">
           <div class="max-w-2xl text-center">
             <h1 class="text-4xl md:text-6xl font-semibold tracking-tight soft-glow">
@@ -81,23 +92,25 @@
               <span class="inline-flex items-center rounded-full border border-white/20 bg-white/5 px-4 py-2 text-sm text-white/85">
                 Scroll langzaam
               </span>
-              <span class="text-sm text-white/60">— kijk wat er gebeurt</span>
+              <span class="text-sm text-white/60">— kijk & luister</span>
             </div>
           </div>
         </div>
 
-        <!-- Bottom hint -->
         <div class="absolute bottom-6 left-0 right-0 z-20 flex flex-col items-center gap-2">
           <div class="h-9 w-[1px] bg-white/40"></div>
           <p id="progressLabel" class="text-xs tracking-widest text-white/70 uppercase">
             Herinnering: 100%
           </p>
         </div>
+
+        <!-- AUDIO -->
+        <audio id="scrollAudio" preload="auto" loop>
+          <source src="audio/kids.mp3" type="audio/mpeg" />
+        </audio>
       </section>
 
-      <!-- Scroll space (controls fading) -->
       <section class="relative h-[240vh]">
-        <!-- Floating text blocks that appear while scrolling -->
         <div class="absolute inset-0">
           <div class="sticky top-0 h-screen flex items-center justify-center px-6">
             <div class="max-w-xl w-full">
@@ -106,9 +119,7 @@
                 class="opacity-0 translate-y-6 transition-all duration-300
                        rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-md"
               >
-                <p class="text-lg text-white/90">
-                  “Iedereen kende iedereen.”
-                </p>
+                <p class="text-lg text-white/90">“Iedereen kende iedereen.”</p>
                 <p class="mt-2 text-sm text-white/70">
                   Je hoorde stemmen, gelach, ballen op asfalt… en je wist: dit is mijn wereld.
                 </p>
@@ -121,9 +132,7 @@
                 class="opacity-0 translate-y-6 transition-all duration-300
                        rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-md"
               >
-                <p class="text-lg text-white/90">
-                  “Het voelde eindeloos.”
-                </p>
+                <p class="text-lg text-white/90">“Het voelde eindeloos.”</p>
                 <p class="mt-2 text-sm text-white/70">
                   Elke dag na school. Zeker in de zomer. Tot het donker werd.
                 </p>
@@ -136,9 +145,7 @@
                 class="opacity-0 translate-y-6 transition-all duration-300
                        rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-md"
               >
-                <p class="text-lg text-white/90">
-                  “En nu… vervaagt het.”
-                </p>
+                <p class="text-lg text-white/90">“En nu… vervaagt het.”</p>
                 <p class="mt-2 text-sm text-white/70">
                   Niet ineens. Maar stap voor stap — precies zoals herinneringen dat doen.
                 </p>
@@ -148,12 +155,9 @@
         </div>
       </section>
 
-      <!-- Ending section -->
       <section class="relative min-h-[80vh] flex items-center justify-center px-6 bg-black">
         <div class="max-w-2xl text-center">
-          <h2 class="text-2xl md:text-3xl font-semibold tracking-tight">
-            Wat blijft hangen?
-          </h2>
+          <h2 class="text-2xl md:text-3xl font-semibold tracking-tight">Wat blijft hangen?</h2>
           <p class="mt-4 text-white/80 leading-relaxed">
             Het besef dat herinneringen niet verdwijnen met een klik.
             Ze worden stiller. Vager. Tot je je afvraagt of het echt zo was.
@@ -180,7 +184,7 @@
           </div>
 
           <p class="mt-8 text-xs tracking-widest text-white/50 uppercase">
-            Prototype — scroll = vervagen
+            Prototype — scroll = vervagen + audio = sfeer
           </p>
         </div>
       </section>
@@ -196,6 +200,12 @@
 
       const resetBtn = document.getElementById("resetBtn");
 
+      // Audio
+      const audio = document.getElementById("scrollAudio");
+      const soundBtn = document.getElementById("soundBtn");
+      let audioEnabled = false; // user has enabled sound
+      let isMuted = false;
+
       function clamp(n, min, max) {
         return Math.min(max, Math.max(min, n));
       }
@@ -210,20 +220,49 @@
         }
       }
 
+      async function enableSound() {
+        try {
+          audio.volume = 0.15; // start soft
+          await audio.play();
+          audioEnabled = true;
+          isMuted = false;
+
+          // Make button a toggle + stop pulsing
+          soundBtn.classList.remove("pulse-soft");
+          soundBtn.textContent = "🔇 Geluid uit";
+        } catch (e) {
+          // If it still fails, keep text (browser blocking)
+          soundBtn.textContent = "🔊 Klik om geluid aan te zetten";
+        }
+      }
+
+      function toggleSound() {
+        if (!audioEnabled) {
+          enableSound();
+          return;
+        }
+
+        // Toggle mute
+        isMuted = !isMuted;
+        audio.muted = isMuted;
+
+        soundBtn.textContent = isMuted ? "🔊 Geluid aan" : "🔇 Geluid uit";
+      }
+
+      soundBtn.addEventListener("click", toggleSound);
+
       function onScroll() {
-        // We control the effect over ~220vh scrolling after the hero
-        const start = window.innerHeight;       // after first screen
-        const end = window.innerHeight * 3.2;   // ~220vh further
+        const start = window.innerHeight;
+        const end = window.innerHeight * 3.2;
         const y = window.scrollY;
 
         const progress = clamp((y - start) / (end - start), 0, 1);
 
-        // Visual “forgetting”:
-        // blur 0 -> 22px, desaturate 1 -> 0.25, contrast 1.05 -> 0.9, opacity 1 -> 0.18
+        // Visual forgetting
         const blur = 22 * progress;
-        const sat = 1.05 - 0.80 * progress;     // 1.05 -> 0.25
-        const contrast = 1.05 - 0.15 * progress; // 1.05 -> 0.90
-        const opacity = 1 - 0.82 * progress;    // 1.00 -> 0.18
+        const sat = 1.05 - 0.80 * progress;
+        const contrast = 1.05 - 0.15 * progress;
+        const opacity = 1 - 0.82 * progress;
 
         img.style.filter = `blur(${blur.toFixed(1)}px) saturate(${sat.toFixed(2)}) contrast(${contrast.toFixed(2)})`;
         img.style.opacity = opacity.toFixed(2);
@@ -231,10 +270,16 @@
         const pct = Math.round((1 - progress) * 100);
         label.textContent = `Herinnering: ${pct}%`;
 
-        // Text blocks appear at certain scroll ranges
+        // Text blocks
         showBlock(line1, progress > 0.08 && progress < 0.55);
         showBlock(line2, progress > 0.30 && progress < 0.78);
         showBlock(line3, progress > 0.62);
+
+        // Audio volume follows scroll (only after user enabled)
+        if (audioEnabled && !isMuted) {
+          const vol = 0.15 + 0.25 * progress; // 0.15 -> 0.40
+          audio.volume = clamp(vol, 0, 0.45);
+        }
       }
 
       window.addEventListener("scroll", onScroll, { passive: true });
@@ -242,6 +287,17 @@
 
       resetBtn.addEventListener("click", () => {
         window.scrollTo({ top: 0, behavior: "smooth" });
+
+        audio.pause();
+        audio.currentTime = 0;
+        audioEnabled = false;
+        isMuted = false;
+        audio.muted = false;
+        audio.volume = 0;
+
+        // Reset button state
+        soundBtn.classList.add("pulse-soft");
+        soundBtn.textContent = "🔊 Klik hier om geluid aan te zetten";
       });
     </script>
   </body>
